@@ -1,8 +1,7 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '../utils/test-utils';
+import { render, screen, fireEvent, waitFor, createMockAuthState } from '../utils/test-utils';
 import userEvent from '@testing-library/user-event';
 import Register from './Register';
-import { mockAuthState } from '../utils/test-utils';
 
 // Mock API responses
 jest.mock('../services/api');
@@ -89,16 +88,14 @@ describe('Register Component', () => {
   });
 
   it('handles successful registration', async () => {
+    const mockAuthState = createMockAuthState(); // Create fresh instance
     const mockRegister = jest.fn().mockResolvedValueOnce({
       email: 'test@example.com',
       firstName: 'John',
       lastName: 'Doe'
     });
-    
-    // Set up the mock before rendering
-    const originalMockState = { ...mockAuthState };
     mockAuthState.register = mockRegister;
-    
+
     render(<Register />);
     
     // Fill in account details
@@ -147,17 +144,15 @@ describe('Register Component', () => {
     });
 
     // Reset mock state
-    Object.assign(mockAuthState, originalMockState);
+    Object.assign(mockAuthState, createMockAuthState());
   });
 
   it('handles registration failure', async () => {
+    const mockAuthState = createMockAuthState(); // Create fresh instance
     const mockError = new Error('Registration failed');
     const mockRegister = jest.fn().mockRejectedValueOnce(mockError);
-    
-    // Set up the mock before rendering
-    const originalMockState = { ...mockAuthState };
     mockAuthState.register = mockRegister;
-    
+
     render(<Register />);
     
     // Fill in account details
@@ -195,7 +190,7 @@ describe('Register Component', () => {
     });
 
     // Reset mock state
-    Object.assign(mockAuthState, originalMockState);
+    Object.assign(mockAuthState, createMockAuthState());
   });
 
   it('validates age requirement', async () => {

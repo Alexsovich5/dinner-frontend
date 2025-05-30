@@ -1,9 +1,7 @@
 import React from 'react';
-import { screen, render, fireEvent, waitFor } from '../utils/test-utils';
-import { act } from 'react-dom/test-utils';
+import { render, screen, fireEvent, waitFor, mockAuthState } from '../utils/test-utils';
 import Login from './Login';
 import { useNavigate, useLocation } from 'react-router-dom';
-import { mockAuthState } from '../utils/test-utils';
 
 jest.mock('react-router-dom', () => ({
   ...jest.requireActual('react-router-dom'),
@@ -67,9 +65,9 @@ describe('Login Component', () => {
     });
   });
 
+  // Use the imported mockAuthState directly in the 'handles login failure' test case
   it('handles login failure', async () => {
-    const mockError = new Error('Invalid credentials');
-    mockAuthState.login = jest.fn().mockRejectedValue(mockError);
+    mockAuthState.login = jest.fn().mockRejectedValue(new Error('Invalid credentials'));
 
     render(<Login />);
 
@@ -112,6 +110,7 @@ describe('Login Component', () => {
     expect(mockNavigate).toHaveBeenCalledWith('/register');
   });
 
+  // Use the imported mockAuthState directly in the 'shows loading state during authentication' test case
   it('shows loading state during authentication', async () => {
     mockAuthState.login = jest.fn().mockImplementation(() => new Promise(resolve => setTimeout(resolve, 1000)));
 
@@ -128,6 +127,7 @@ describe('Login Component', () => {
     expect(await screen.findByRole('progressbar')).toBeInTheDocument();
   });
 
+  // Use the imported mockAuthState directly in the 'disables form inputs during submission' test case
   it('disables form inputs during submission', async () => {
     mockAuthState.login = jest.fn().mockImplementation(() => new Promise(resolve => setTimeout(resolve, 1000)));
 

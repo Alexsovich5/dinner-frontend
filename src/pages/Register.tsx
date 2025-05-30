@@ -63,7 +63,8 @@ const validationSchema = yup.object({
     .string()
     .required('Gender is required'),
   dietaryPreferences: yup
-    .string()
+    .array()
+    .of(yup.string())
     .required('Dietary preference is required'),
   cuisinePreferences: yup
     .string()
@@ -84,7 +85,7 @@ interface RegisterFormValues {
   lastName: string;
   birthdate: string; // This will be used as dateOfBirth when sending to API
   gender: string;
-  dietaryPreferences: string;
+  dietaryPreferences: string[];
   cuisinePreferences: string;
   location: string;
   lookingFor: string;
@@ -107,7 +108,7 @@ const Register: React.FC = () => {
       lastName: '',
       birthdate: '',
       gender: '',
-      dietaryPreferences: '',
+      dietaryPreferences: [] as string[], // Change from string to string[]
       cuisinePreferences: '',
       location: '',
       lookingFor: '',
@@ -127,7 +128,9 @@ const Register: React.FC = () => {
           lastName: values.lastName,
           dateOfBirth: values.birthdate,
           gender: values.gender,
-          dietaryPreferences: values.dietaryPreferences,
+          dietaryPreferences: Array.isArray(values.dietaryPreferences)
+            ? values.dietaryPreferences
+            : [values.dietaryPreferences], // Ensure it's always an array
           cuisinePreferences: values.cuisinePreferences,
           location: values.location,
           lookingFor: values.lookingFor

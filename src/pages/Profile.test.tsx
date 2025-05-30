@@ -1,7 +1,6 @@
 import React from 'react';
-import { render, screen, fireEvent, waitFor } from '../utils/test-utils';
+import { render, screen, fireEvent, createMockAuthState } from '../utils/test-utils';
 import Profile from './Profile';
-import { mockAuthState } from '../utils/test-utils'; // Import global mockAuthState
 import { useNavigate } from 'react-router-dom';
 
 jest.mock('react-router-dom', () => ({
@@ -31,6 +30,7 @@ describe('Profile Component', () => {
   beforeEach(() => {
     (useNavigate as jest.Mock).mockReturnValue(mockNavigate);
     // Reset mockAuthState before each test if needed, or set defaults
+    const mockAuthState = createMockAuthState();
     Object.assign(mockAuthState, {
       user: null,
       isAuthenticated: false,
@@ -49,18 +49,21 @@ describe('Profile Component', () => {
   });
 
   it('renders loading state', () => {
+    const mockAuthState = createMockAuthState(); // Create fresh instance
     mockAuthState.isLoading = true;
     render(<Profile />);
     expect(screen.getByRole('progressbar')).toBeInTheDocument();
   });
 
   it('renders error state', () => {
+    const mockAuthState = createMockAuthState();
     mockAuthState.error = 'Failed to load profile';
     render(<Profile />);
     expect(screen.getByText(/failed to load profile/i)).toBeInTheDocument();
   });
 
   it('renders message when user is not authenticated', () => {
+    const mockAuthState = createMockAuthState();
     mockAuthState.isAuthenticated = false;
     render(<Profile />);
     expect(screen.getByText(/please log in to view your profile/i)).toBeInTheDocument();
@@ -68,6 +71,7 @@ describe('Profile Component', () => {
 
   it('renders user profile information when authenticated', () => {
     // Set the user in the global mockAuthState for this test
+    const mockAuthState = createMockAuthState();
     mockAuthState.user = mockUser;
     mockAuthState.isAuthenticated = true;
 
@@ -81,6 +85,7 @@ describe('Profile Component', () => {
 
   it('navigates to edit profile page on button click', () => {
     // Set the user in the global mockAuthState for this test
+    const mockAuthState = createMockAuthState();
     mockAuthState.user = mockUser;
     mockAuthState.isAuthenticated = true;
 

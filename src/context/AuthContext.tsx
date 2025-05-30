@@ -54,6 +54,10 @@ interface RegisterData {
   lastName: string;
   dateOfBirth: string;
   gender: string;
+  dietaryPreferences?: string[]; // Added dietaryPreferences
+  cuisinePreferences?: string; // Added cuisinePreferences
+  location?: string; // Added location
+  lookingFor?: string; // Added lookingFor
 }
 
 // Create context
@@ -189,3 +193,4 @@ export const useAuth = () => {
 };
 
 export default AuthContext;
+export type { User };
